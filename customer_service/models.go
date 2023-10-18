@@ -182,6 +182,26 @@ func (e EventMessage) EventType() EventType {
 	return EventType(e["event_type"].(string))
 }
 
+func (e EventMessage) ExternalUserid() string {
+	return e["external_userid"].(string)
+}
+
+func (e EventMessage) OpenKfid() string {
+	return e["open_kfid"].(string)
+}
+
+func (e EventMessage) Scene() string {
+	return e["scene"].(string)
+}
+
+func (e EventMessage) SceneParam() string {
+	return e["scene_param"].(string)
+}
+
+func (e EventMessage) WelcomeCode() string {
+	return e["welcome_code"].(string)
+}
+
 type EventMessageDecoder[T any] struct {
 	msg EventMessage
 }
