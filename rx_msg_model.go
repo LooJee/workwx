@@ -64,8 +64,11 @@ const EventTypeSysApprovalChange EventType = "sys_approval_change"
 
 const EventTypeSysCustomerAcquisition EventType = "customer_acquisition"
 
-// EventTypeCustomerService 微信客服消息通知
-const EventTypeCustomerService EventType = "kf_msg_or_event"
+// EventTypeKfMsgOrEvent 微信客服消息通知
+const EventTypeKfMsgOrEvent EventType = "kf_msg_or_event"
+
+// EventTypeKfAccountAuthChange 客服账号授权变更事件
+const EventTypeKfAccountAuthChange EventType = "kf_account_auth_change"
 
 // ChangeType 变更类型
 type ChangeType string
@@ -394,4 +397,15 @@ type rxEventCustomerService struct {
 	MsgType    string `xml:"MsgType"`
 	Token      string `xml:"Token"`
 	OpenKfId   string `xml:"OpenKfId"`
+}
+
+// 客服账号授权变更事件
+type rxEventTypeKfAccountAuthChange struct {
+	ToUserName      string   `xml:"ToUserName"`
+	FromUserName    string   `xml:"FromUserName"`
+	CreateTime      int64    `xml:"CreateTime"`
+	MsgType         string   `xml:"MsgType"`
+	Event           string   `xml:"Event"`
+	AuthAddOpenKfId []string `xml:"AuthAddOpenKfId"`
+	AuthDelOpenKfId []string `xml:"AuthDelOpenKfId"`
 }

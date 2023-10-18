@@ -69,8 +69,15 @@ func extractMessageExtras(common rxMessageCommon, body []byte) (messageKind, err
 
 	case MessageTypeEvent:
 		switch common.Event {
-		case EventTypeCustomerService:
+		case EventTypeKfMsgOrEvent:
 			var x rxEventCustomerService
+			err := xml.Unmarshal(body, &x)
+			if err != nil {
+				return nil, err
+			}
+			return &x, nil
+		case EventTypeKfAccountAuthChange:
+			var x rxEventTypeKfAccountAuthChange
 			err := xml.Unmarshal(body, &x)
 			if err != nil {
 				return nil, err
@@ -1026,4 +1033,60 @@ func (r rxEventCustomerService) GetToken() string {
 
 func (r rxEventCustomerService) GetOpenKfId() string {
 	return r.OpenKfId
+}
+
+type EventTypeKfAccountAuthChangeExtras interface {
+	messageKind
+
+	GetToUserName() string
+	GetFromUserName() string
+	GetCreateTime() int64
+	GetMsgType() string
+	GetEvent() string
+	GetAuthAddOpenKfId() []string
+	GetAuthDelOpenKfId() []string
+}
+
+func (r rxEventTypeKfAccountAuthChange) formatInto(writer io.Writer) {
+	_, _ = fmt.Fprintf(
+		writer,
+		"ToUserName: %#v, FromUserName: %#v, CreateTime: %#v, MsgType: %#v, Event: %#v, AuthAddOpenKfId: %#v, AuthDelOpenKfId: %#v",
+		r.ToUserName,
+		r.FromUserName,
+		r.CreateTime,
+		r.MsgType,
+		r.Event,
+		r.AuthAddOpenKfId,
+		r.AuthDelOpenKfId,
+	)
+}
+
+var _ EventTypeKfAccountAuthChangeExtras = (*rxEventTypeKfAccountAuthChange)(nil)
+
+func (r rxEventTypeKfAccountAuthChange) GetToUserName() string {
+	return r.ToUserName
+}
+
+func (r rxEventTypeKfAccountAuthChange) GetFromUserName() string {
+	return r.FromUserName
+}
+
+func (r rxEventTypeKfAccountAuthChange) GetCreateTime() int64 {
+	return r.CreateTime
+}
+
+func (r rxEventTypeKfAccountAuthChange) GetMsgType() string {
+	return r.MsgType
+}
+
+func (r rxEventTypeKfAccountAuthChange) GetEvent() string {
+	return r.Event
+}
+
+func (r rxEventTypeKfAccountAuthChange) GetAuthAddOpenKfId() []string {
+	return r.AuthAddOpenKfId
+}
+
+func (r rxEventTypeKfAccountAuthChange) GetAuthDelOpenKfId() []string {
+	return r.AuthDelOpenKfId
 }
