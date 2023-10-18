@@ -221,13 +221,9 @@ type FetchCustomerServiceCustomersItem struct {
 	Gender              int      `json:"gender"`          // 性别。第三方不可获取，统一返回0
 	Unionid             string   `json:"unionid"`         // unionid，需要绑定微信开发者账号才能获取到，查看绑定方法。第三方不可获取
 	EnterSessionContext struct { // 48小时内最后一次进入会话的上下文信息。请求的need_enter_session_context参数设置为1才返回
-		Scene          string   `json:"scene"`       // 进入会话的场景值，获取客服账号链接开发者自定义的场景值
-		SceneParam     string   `json:"scene_param"` // 进入会话的自定义参数，获取客服账号链接返回的url，开发者按规范拼接的scene_param参数
-		WechatChannels struct { // 进入会话的视频号信息，从视频号进入会话才有值
-			Nickname     string `json:"nickname"`      // 视频号名称，视频号场景值为1、2、3时返回此项
-			ShopNickname string `json:"shop_nickname"` // 视频号小店名称，视频号场景值为4、5时返回此项
-			Scene        int    `json:"scene"`         // 视频号场景值。1：视频号主页，2：视频号直播间商品列表页，3：视频号商品橱窗页，4：视频号小店商品详情页，5：视频号小店订单页
-		} `json:"wechat_channels"`
+		Scene          string                         `json:"scene"`           // 进入会话的场景值，获取客服账号链接开发者自定义的场景值
+		SceneParam     string                         `json:"scene_param"`     // 进入会话的自定义参数，获取客服账号链接返回的url，开发者按规范拼接的scene_param参数
+		WechatChannels customer_service.WechatChannel `json:"wechat_channels"` // 进入会话的视频号信息，从视频号进入会话才有值
 	} `json:"enter_session_context"`
 }
 
