@@ -202,6 +202,10 @@ func (e EventMessage) WelcomeCode() string {
 	return e["welcome_code"].(string)
 }
 
+func (e EventMessage) ChangeType() int {
+	return e["change_type"].(int)
+}
+
 type EventMessageDecoder[T any] struct {
 	msg EventMessage
 }
