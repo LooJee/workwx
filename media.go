@@ -125,7 +125,7 @@ func (c *App) UploadTempFileMedia(media *Media) (*MediaUploadResult, error) {
 }
 
 // FetchMediaInfo 通过header获取媒体资源的信息
-func (c *App) FetchMediaInfo(ctx context.Context, mediaId string) (MediaInfoRsp, error) {
+func (c *App) FetchMediaInfo(ctx context.Context, mediaId string) (mediaInfo MediaInfoRsp, err error) {
 	var (
 		req = FetchMediaReq{MediaID: mediaId}
 		rsp struct {
@@ -134,13 +134,13 @@ func (c *App) FetchMediaInfo(ctx context.Context, mediaId string) (MediaInfoRsp,
 		}
 	)
 
-	if err := c.executeWXApiHead(ctx, "/cgi-bin/media/get", req, &rsp, true); err != nil {
+	if mediaInfo, err = c.executeWXApiHead(ctx, "/cgi-bin/media/get", req, &rsp, true); err != nil {
 		return MediaInfoRsp{}, err
 	} else if bizErr := rsp.TryIntoErr(); bizErr != nil {
 		return MediaInfoRsp{}, bizErr
 	}
 
-	return rsp.MediaInfoRsp, nil
+	return mediaInfo, nil
 }
 
 func (c *App) DownloadMedia(ctx context.Context, mediaId string, writer io.Writer) error {

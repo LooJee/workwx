@@ -51,7 +51,7 @@ func (x FetchMediaReq) intoURLValues() url.Values {
 }
 
 type MediaInfoRsp struct {
-	Filename      string `json:"filename"`
-	ContentLength int    `json:"content_length"`
-	ContentType   string `json:"content_type"`
+	Filename      string `header:"Content-Disposition"`
+	ContentLength int    `header:"Content-Length"`
+	ContentType   string `header:"Content-Type"`
 }

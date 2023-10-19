@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"sync"
 
@@ -155,7 +156,7 @@ func (c *App) executeWXApiJSONPost(path string, req bodyer, objResp interface{},
 	return err
 }
 
-func (c *App) executeWXApiHead(ctx context.Context, path string, req urlValuer, objResp interface{}, withAccessToken bool) error {
+func (c *App) executeWXApiHead(ctx context.Context, path string, req urlValuer, objResp interface{}, withAccessToken bool) (mediaInfo MediaInfoRsp, err error) {
 	wxUrlWithToken := c.composeWXURLWithToken(path, req, withAccessToken)
 	urlStr := wxUrlWithToken.String()
 
@@ -164,10 +165,17 @@ func (c *App) executeWXApiHead(ctx context.Context, path string, req urlValuer, 
 		Head(urlStr)
 
 	if err != nil {
-		return err
+		return
 	}
 
-	return httpheader.Decode(resp.Header(), &objResp)
+	err = httpheader.Decode(resp.Header(), &mediaInfo)
+	if err != nil {
+		return
+	}
+	if resp.StatusCode() != http.StatusOK {
+		err = json.Unmarshal(resp.Body(), &objResp)
+	}
+	return
 }
 
 func (c *App) executeWXApiMediaUpload(path string, req mediaUploader, objResp interface{}, withAccessToken bool) error {
