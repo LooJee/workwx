@@ -143,8 +143,8 @@ func (c *App) FetchMediaInfo(ctx context.Context, mediaId string) (mediaInfo Med
 	return mediaInfo, nil
 }
 
-func (c *App) DownloadMedia(ctx context.Context, mediaId string, writer io.Writer) error {
-	panic("implement me")
+func (c *App) DownloadMedia(mediaId string) (*http.Response, error) {
+	return c.execGet("/cgi-bin/media/get", FetchMediaReq{MediaID: mediaId}, true)
 }
 
 func (c *App) RangeDownloadMedia(ctx context.Context, mediaId string, writer io.Writer) error {

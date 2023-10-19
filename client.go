@@ -110,6 +110,20 @@ func (c *App) executeWXApiGet(path string, req urlValuer, objResp interface{}, w
 	return err
 }
 
+func (c *App) execGet(path string, req urlValuer, withAccessToken bool) (hrsp *http.Response, err error) {
+	wxUrlWithToken := c.composeWXURLWithToken(path, req, withAccessToken)
+	urlStr := wxUrlWithToken.String()
+
+	//defer logger.Debugf("url: %s, req: %+v, resp: %+v", urlStr, req, objResp)
+
+	resp, err := c.opts.restyCli.R().SetDoNotParseResponse(true).Get(urlStr)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.RawResponse, nil
+}
+
 // 微信端接收的参数中一个数组里包含有多种类型，强类型语言无法支持，只能在前端拼接成str直接传到wx
 func (c *App) executeWXApiJSONPostWithBytesReq(path string, req []byte, objResp interface{}, withAccessToken bool) error {
 	wxUrlWithToken := c.composeWXURLWithToken(path, req, withAccessToken)
