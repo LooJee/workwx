@@ -74,7 +74,7 @@ type LocationMessage struct {
 
 type LinkMessage struct {
 	Title        string `json:"title"`             // 标题
-	Description  string `json:"description"`       // 描述
+	Desc         string `json:"desc"`              // 描述
 	Url          string `json:"url"`               // 链接
 	PicUrl       string `json:"pic_url,omitempty"` // 缩略图链接
 	ThumbMediaId string `json:"thumb_media_id"`    // 缩略图媒体ID
