@@ -175,16 +175,7 @@ type SendCustomerServiceMsgReq struct {
 	OpenKfid string `json:"open_kfid"`
 	Msgid    string `json:"msgid,omitempty"` // 可不填
 
-	Msgtype     customer_service.MessageType         `json:"msgtype"`
-	Text        *customer_service.TextMessage        `json:"text,omitempty"`
-	Image       *customer_service.ImageMessage       `json:"image,omitempty"`
-	Voice       *customer_service.VoiceMessage       `json:"voice,omitempty"`
-	Video       *customer_service.VideoMessage       `json:"video,omitempty"`
-	File        *customer_service.FileMessage        `json:"file,omitempty"`
-	Link        *customer_service.LinkMessage        `json:"link,omitempty"` // 图文链接
-	MiniProgram *customer_service.MiniProgramMessage `json:"mini_program"`   // 小程序消息
-	MsgMenu     *customer_service.MsgMenuMessage     `json:"msg_menu"`       // 菜单消息
-	Location    *customer_service.LocationMessage    `json:"location"`       // 地理位置消息
+	customer_service.MsgItem
 }
 
 type SendCustomerServiceMsgRsp struct {
