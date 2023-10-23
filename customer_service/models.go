@@ -203,7 +203,7 @@ func (e EventMessage) WelcomeCode() string {
 }
 
 func (e EventMessage) ChangeType() int {
-	return e["change_type"].(int)
+	return int(e["change_type"].(float64))
 }
 
 type EventMessageDecoder[T any] struct {
