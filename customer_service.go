@@ -237,6 +237,24 @@ func (c *App) SendCustomerServiceMsg(ctx context.Context, req SendCustomerServic
 	return out.SendCustomerServiceMsgRsp, nil
 }
 
+// SendCustomerServiceMsgOnEvent 发送事件响应消息
+// https://developer.work.weixin.qq.com/document/path/95122
+func (c *App) SendCustomerServiceMsgOnEvent(ctx context.Context, req SendMsgOnCustomerServiceEventReq) (rsp SendMsgOnCustomerServiceEventRsp, err error) {
+	var out struct {
+		CommonResp
+		SendMsgOnCustomerServiceEventRsp
+	}
+
+	err = c.executeWXApiJSONPost("/cgi-bin/kf/send_msg_on_event", newIntoBodyer(req), &out, true)
+	if err != nil {
+		return
+	} else if bizErr := out.TryIntoErr(); bizErr != nil {
+		return rsp, bizErr
+	}
+
+	return out.SendMsgOnCustomerServiceEventRsp, nil
+}
+
 // FetchCustomerServiceCustomers 获取客户基础信息
 // https://developer.work.weixin.qq.com/document/path/95159
 func (c *App) FetchCustomerServiceCustomers(ctx context.Context, req FetchCustomerServiceCustomersReq) (rsp FetchCustomerServiceCustomersRsp, err error) {
