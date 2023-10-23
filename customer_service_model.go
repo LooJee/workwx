@@ -185,8 +185,8 @@ type SendCustomerServiceMsgRsp struct {
 // 发送欢迎语等事件响应消息 Models
 
 type SendMsgOnCustomerServiceEventReq struct {
-	Code  string `json:"code"`  // 事件响应消息对应的code。通过事件回调下发，仅可使用一次。
-	Msgid string `json:"msgid"` // 消息ID。如果请求参数指定了msgid，则原样返回，否则系统自动生成并返回。 不多于32字节
+	Code  string `json:"code"`            // 事件响应消息对应的code。通过事件回调下发，仅可使用一次。
+	Msgid string `json:"msgid,omitempty"` // 消息ID。如果请求参数指定了msgid，则原样返回，否则系统自动生成并返回。 不多于32字节
 
 	Msgtype customer_service.MessageType     `json:"msgtype"`            // 消息类型。对不同的msgtype，有相应的结构描述，详见消息类型
 	Text    *customer_service.TextMessage    `json:"text,omitempty"`     // 文本消息
