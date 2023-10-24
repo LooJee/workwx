@@ -179,30 +179,52 @@ const (
 type EventMessage map[string]interface{}
 
 func (e EventMessage) EventType() EventType {
+	if e["event_type"] == nil {
+		return ""
+	}
 	return EventType(e["event_type"].(string))
 }
 
 func (e EventMessage) ExternalUserid() string {
+	if e["external_userid"] == nil {
+		return ""
+	}
 	return e["external_userid"].(string)
 }
 
 func (e EventMessage) OpenKfid() string {
+	if e["open_kfid"] == nil {
+		return ""
+	}
 	return e["open_kfid"].(string)
 }
 
 func (e EventMessage) Scene() string {
+	if e["scene"] == nil {
+		return ""
+	}
 	return e["scene"].(string)
 }
 
 func (e EventMessage) SceneParam() string {
+	if e["scene_param"] == nil {
+		return ""
+	}
 	return e["scene_param"].(string)
 }
 
 func (e EventMessage) WelcomeCode() string {
+	if e["welcome_code"] == nil {
+		return ""
+	}
+
 	return e["welcome_code"].(string)
 }
 
 func (e EventMessage) ChangeType() int {
+	if e["change_type"] == nil {
+		return 0
+	}
 	return int(e["change_type"].(float64))
 }
 
