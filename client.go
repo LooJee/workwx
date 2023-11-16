@@ -29,6 +29,9 @@ type App struct {
 	accessToken            *token
 	jsapiTicket            *token
 	jsapiTicketAgentConfig *token
+	appType                AppType
+
+	SuiteTicketGetter GetSuiteTicket // 获取 suiteTicket
 }
 
 // New 构造一个 WorkWX 客户端对象，需要提供企业 ID
@@ -45,20 +48,73 @@ func New(corpID string, opts ...CtorOption) *WorkWX {
 	}
 }
 
+type AppOption func(*App)
+
+func AppWithAgentID(agentID int64) AppOption {
+	return func(app *App) {
+		app.AgentID = agentID
+	}
+}
+
+type GetSuiteTicket func(ctx context.Context, key string) (string, error)
+
+type AppType int
+
+const (
+	AppTypeCustom AppType = iota
+	AppTypeProvider
+	AppTypeSuite
+)
+
 // WithApp 构造本企业下某自建 app 的客户端
-func (c *WorkWX) WithApp(corpSecret string, agentID int64) *App {
+func (c *WorkWX) WithApp(corpSecret string, opts ...AppOption) *App {
 	app := App{
 		WorkWX:                 c,
 		CorpSecret:             corpSecret,
-		AgentID:                agentID,
 		accessToken:            &token{mutex: &sync.RWMutex{}},
 		jsapiTicket:            &token{mutex: &sync.RWMutex{}},
 		jsapiTicketAgentConfig: &token{mutex: &sync.RWMutex{}},
+		appType:                AppTypeCustom,
 	}
+
+	for _, opt := range opts {
+		opt(&app)
+	}
+
 	app.accessToken.setGetTokenFunc(app.getAccessToken)
 	app.jsapiTicket.setGetTokenFunc(app.getJSAPITicket)
 	app.jsapiTicketAgentConfig.setGetTokenFunc(app.getJSAPITicketAgentConfig)
 	app.SpawnAccessTokenRefresher()
+
+	return &app
+}
+
+func (c *WorkWX) WithProvider(corpSecret string) *App {
+	app := App{
+		WorkWX:      c,
+		CorpSecret:  corpSecret,
+		accessToken: &token{mutex: &sync.RWMutex{}},
+		appType:     AppTypeProvider,
+	}
+
+	app.accessToken.setGetTokenFunc(app.getProviderAccessToken)
+	app.SpawnAccessTokenRefresher()
+
+	return &app
+}
+
+func (c *WorkWX) WithSuite(corpSecret string, ticketGetter GetSuiteTicket) *App {
+	app := App{
+		WorkWX:            c,
+		CorpSecret:        corpSecret,
+		accessToken:       &token{mutex: &sync.RWMutex{}},
+		SuiteTicketGetter: ticketGetter,
+		appType:           AppTypeSuite,
+	}
+
+	app.accessToken.setGetTokenFunc(app.getSuiteAccessToken)
+	app.SpawnAccessTokenRefresher()
+
 	return &app
 }
 
@@ -88,7 +144,17 @@ func (c *App) composeWXURLWithToken(path string, req interface{}, withAccessToke
 	}
 
 	q := wxApiURL.Query()
-	q.Set("access_token", c.accessToken.getToken())
+
+	q.Set("debug", "1")
+
+	if c.appType == AppTypeCustom {
+		q.Set("access_token", c.accessToken.getToken())
+	} else if c.appType == AppTypeProvider {
+		q.Set("provider_access_token", c.accessToken.getToken())
+	} else {
+		q.Set("suite_access_token", c.accessToken.getToken())
+	}
+
 	wxApiURL.RawQuery = q.Encode()
 
 	return wxApiURL
@@ -149,13 +215,13 @@ func (c *App) executeWXApiJSONPost(path string, req bodyer, objResp interface{},
 	wxUrlWithToken := c.composeWXURLWithToken(path, req, withAccessToken)
 	urlStr := wxUrlWithToken.String()
 
-	//defer logger.Debugf("url: %s, req: %+v, resp: %+v", urlStr, req, objResp)
-
 	body, err := req.intoBody()
 	if err != nil {
 		// TODO: error_chain
 		return err
 	}
+
+	defer fmt.Printf("url: %s, req: %+v, resp: %+v\n", urlStr, string(body), objResp)
 
 	resp, err := c.opts.restyCli.R().
 		SetHeader("Content-Type", "application/json").
@@ -164,6 +230,9 @@ func (c *App) executeWXApiJSONPost(path string, req bodyer, objResp interface{},
 	if err != nil {
 		// TODO: error_chain
 		return err
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return errors.New(resp.Status())
 	}
 
 	err = json.Unmarshal(resp.Body(), &objResp)

@@ -18,6 +18,17 @@ type rxMessageCommon struct {
 	Event EventType `xml:"Event"`
 	// ChangeType 变更类型 Event为change_external_contact存在
 	ChangeType ChangeType `xml:"ChangeType"`
+	rxSuiteMessage
+}
+
+type rxSuiteMessage struct {
+	SuiteId     string `xml:"SuiteId"`
+	InfoType    string `xml:"InfoType"`
+	TimeStamp   int64  `xml:"TimeStamp"`
+	SuiteTicket string `xml:"SuiteTicket"`
+	AuthCode    string `xml:"AuthCode"`
+	State       string `xml:"State"`
+	AuthCorpId  string `xml:"AuthCorpId"`
 }
 
 // MessageType 消息类型

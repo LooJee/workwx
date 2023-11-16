@@ -21,6 +21,51 @@ type token struct {
 	getTokenFunc func() (tokenInfo, error)
 }
 
+func (c *App) getSuiteAccessToken() (tokenInfo, error) {
+	ticket, err := c.SuiteTicketGetter(context.Background(), c.CorpID)
+	if err != nil {
+		return tokenInfo{}, err
+	}
+	resp, err := c.execGetSuitAccessToken(suiteAccessTokenReq{
+		SuiteId:     c.CorpID,
+		SuiteSecret: c.CorpSecret,
+		SuiteTicket: ticket,
+	})
+
+	if err != nil {
+		return tokenInfo{}, err
+	}
+
+	if err := resp.TryIntoErr(); err != nil {
+		return tokenInfo{}, err
+	}
+
+	return tokenInfo{token: resp.SuiteAccessToken, expiresIn: time.Duration(resp.ExpiresInSecs)}, nil
+}
+
+func (c *App) getProviderAccessToken() (tokenInfo, error) {
+	type Response struct {
+		CommonResp
+		providerAccessTokenResp
+	}
+	var resp Response
+	err := c.executeWXApiJSONPost("/cgi-bin/service/get_provider_token", newIntoBodyer(providerAccessTokenReq{
+		CorpId:         c.CorpID,
+		ProviderSecret: c.CorpSecret,
+	}), &resp, false)
+	if err != nil {
+		return tokenInfo{}, err
+	}
+	if bizErr := resp.TryIntoErr(); bizErr != nil {
+		return tokenInfo{}, bizErr
+	}
+
+	return tokenInfo{
+		token:     resp.ProviderAccessToken,
+		expiresIn: time.Duration(resp.ExpiresIn),
+	}, nil
+}
+
 // getAccessToken 获取 access token
 func (c *App) getAccessToken() (tokenInfo, error) {
 	//fmt.Println("fetch access_token")

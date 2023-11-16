@@ -26,6 +26,8 @@ type RxMessage struct {
 	// ChangeType 变更类型 Event为change_external_contact存在
 	ChangeType ChangeType
 
+	rxSuiteMessage
+
 	extras messageKind
 }
 
@@ -51,15 +53,16 @@ func fromEnvelope(body []byte) (*RxMessage, error) {
 		sendTime := time.Unix(common.CreateTime, 0) // in time.Local
 
 		obj = RxMessage{
-			ToUserID:   common.ToUserName,
-			FromUserID: common.FromUserName,
-			SendTime:   sendTime,
-			MsgType:    common.MsgType,
-			MsgID:      common.MsgID,
-			AgentID:    common.AgentID,
-			Event:      common.Event,
-			ChangeType: common.ChangeType,
-			extras:     extras,
+			ToUserID:       common.ToUserName,
+			FromUserID:     common.FromUserName,
+			SendTime:       sendTime,
+			MsgType:        common.MsgType,
+			MsgID:          common.MsgID,
+			AgentID:        common.AgentID,
+			Event:          common.Event,
+			ChangeType:     common.ChangeType,
+			rxSuiteMessage: common.rxSuiteMessage,
+			extras:         extras,
 		}
 	}
 
