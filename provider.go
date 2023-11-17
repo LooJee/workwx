@@ -24,3 +24,24 @@ func (c *App) GetCustomizedAuthUrl(ctx context.Context, state string, templateId
 
 	return resp.GetCustomizedAuthUrlResp, nil
 }
+
+func (c *App) GetAppLicenseInfo(ctx context.Context, corpId, suiteId string) (GetAppLicenseInfoResp, error) {
+	type Response struct {
+		CommonResp
+		GetAppLicenseInfoResp
+	}
+
+	var (
+		resp Response
+		req  = GetAppLicenseInfoReq{
+			CorpId:  corpId,
+			SuiteId: suiteId,
+		}
+	)
+
+	if err := c.executeWXApiJSONPost("/cgi-bin/license/get_app_license_info", newIntoBodyer(req), &resp, true); err != nil {
+		return resp.GetAppLicenseInfoResp, err
+	}
+
+	return resp.GetAppLicenseInfoResp, nil
+}

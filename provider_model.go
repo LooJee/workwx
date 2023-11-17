@@ -7,7 +7,7 @@ type GetCustomizedAuthUrlReq struct {
 
 type GetCustomizedAuthUrlResp struct {
 	QrcodeUrl string `json:"qrcode_url"`
-	ExpiresIn int    `json:"expires_in"`
+	ExpiresIn int64  `json:"expires_in"`
 }
 
 type AppQrcodeStyle int
@@ -36,4 +36,21 @@ type GetAppQrCodeReq struct {
 
 type GetAppQrCodeResp struct {
 	Qrcode string `json:"qrcode"`
+}
+
+// GetAppLicenseInfoReq 获取应用的接口许可状态
+type GetAppLicenseInfoReq struct {
+	CorpId  string `json:"corpid"`   // 企业id
+	SuiteId string `json:"suite_id"` // 套件id
+}
+
+type TrailInfo struct {
+	StartTime int `json:"start_time"`
+	EndTime   int `json:"end_time"`
+}
+
+type GetAppLicenseInfoResp struct {
+	LicenseStatus    int       `json:"license_status"`
+	TrailInfo        TrailInfo `json:"trail_info"`
+	LicenseCheckTime int       `json:"license_check_time"`
 }

@@ -23,3 +23,7 @@ type AgentInfo struct {
 	HomeUrl                 string `json:"home_url"`                  // 应用主页url
 	CustomizedPublishStatus int    `json:"customized_publish_status"` // 代开发自建应用返回该字段，表示代开发发布状态。0：待开发（企业已授权，服务商未创建应用）；1：开发中（服务商已创建应用，未上线）；2：已上线（服务商已上线应用且不存在未上线版本）；3：存在未上线版本（服务商已上线应用但存在未上线版本）
 }
+
+type GetAgentPermission struct {
+	AppPermissions []string `json:"app_permissions"`
+}

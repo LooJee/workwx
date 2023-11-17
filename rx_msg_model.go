@@ -21,14 +21,24 @@ type rxMessageCommon struct {
 	rxSuiteMessage
 }
 
+type SuiteInfoType string
+
+const (
+	SuiteInfoTypeSuiteTicket        SuiteInfoType = "suite_ticket"
+	SuiteInfoTypeCreateAuth         SuiteInfoType = "create_auth"
+	SuiteInfoTypeChangeAuth         SuiteInfoType = "change_auth"
+	SuiteInfoTypeCancelAuth         SuiteInfoType = "cancel_auth"
+	SuiteInfoTypeResetPermanentCode SuiteInfoType = "reset_permanent_code"
+)
+
 type rxSuiteMessage struct {
-	SuiteId     string `xml:"SuiteId"`
-	InfoType    string `xml:"InfoType"`
-	TimeStamp   int64  `xml:"TimeStamp"`
-	SuiteTicket string `xml:"SuiteTicket"`
-	AuthCode    string `xml:"AuthCode"`
-	State       string `xml:"State"`
-	AuthCorpId  string `xml:"AuthCorpId"`
+	SuiteId     string        `xml:"SuiteId"`
+	InfoType    SuiteInfoType `xml:"InfoType"`
+	TimeStamp   int64         `xml:"TimeStamp"`
+	SuiteTicket string        `xml:"SuiteTicket"`
+	AuthCode    string        `xml:"AuthCode"`
+	State       string        `xml:"State"`
+	AuthCorpId  string        `xml:"AuthCorpId"`
 }
 
 // MessageType 消息类型

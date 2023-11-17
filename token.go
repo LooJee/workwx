@@ -10,6 +10,9 @@ import (
 )
 
 type tokenInfo struct {
+	corpId    string
+	secret    string
+	appType   AppType
 	token     string
 	expiresIn time.Duration
 }
@@ -40,7 +43,13 @@ func (c *App) getSuiteAccessToken() (tokenInfo, error) {
 		return tokenInfo{}, err
 	}
 
-	return tokenInfo{token: resp.SuiteAccessToken, expiresIn: time.Duration(resp.ExpiresInSecs)}, nil
+	return tokenInfo{
+		token:     resp.SuiteAccessToken,
+		expiresIn: time.Duration(resp.ExpiresInSecs),
+		corpId:    c.CorpID,
+		secret:    c.CorpSecret,
+		appType:   c.appType,
+	}, nil
 }
 
 func (c *App) getProviderAccessToken() (tokenInfo, error) {
@@ -63,6 +72,9 @@ func (c *App) getProviderAccessToken() (tokenInfo, error) {
 	return tokenInfo{
 		token:     resp.ProviderAccessToken,
 		expiresIn: time.Duration(resp.ExpiresIn),
+		corpId:    c.CorpID,
+		secret:    c.CorpSecret,
+		appType:   c.appType,
 	}, nil
 }
 
@@ -76,7 +88,13 @@ func (c *App) getAccessToken() (tokenInfo, error) {
 	if err != nil {
 		return tokenInfo{}, err
 	}
-	return tokenInfo{token: get.AccessToken, expiresIn: time.Duration(get.ExpiresInSecs)}, nil
+	return tokenInfo{
+		token:     get.AccessToken,
+		expiresIn: time.Duration(get.ExpiresInSecs),
+		corpId:    c.CorpID,
+		secret:    c.CorpSecret,
+		appType:   c.appType,
+	}, nil
 }
 
 // SpawnAccessTokenRefresher 启动该 app 的 access token 刷新 goroutine
@@ -211,7 +229,7 @@ func (t *token) tokenRefresher(ctx context.Context) {
 		case <-time.After(waitDuration):
 			retryer := backoff.WithContext(backoff.NewExponentialBackOff(), ctx)
 			if err := backoff.Retry(t.syncToken, retryer); err != nil {
-				fmt.Println("retry getting access toke failed", "err", err)
+				fmt.Println("retry getting access toke failed", "err:", err, "corpId:", t.corpId, t.appType)
 				_ = err
 			}
 

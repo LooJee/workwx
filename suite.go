@@ -20,3 +20,20 @@ func (c *App) GetPermanentCode(ctx context.Context, authCode string) (GetPermane
 
 	return resp.GetPermanentCodeResp, nil
 }
+
+func (c *App) GetAuthInfo(ctx context.Context, corpId, permanentCode string) (GetAuthInfoResp, error) {
+	type Response struct {
+		CommonResp
+		GetAuthInfoResp
+	}
+	var resp Response
+	if err := c.executeWXApiJSONPost("/cgi-bin/service/get_auth_info", newIntoBodyer(GetAuthInfoReq{AuthCorpId: corpId, PermanentCode: permanentCode}), &resp, true); err != nil {
+		return GetAuthInfoResp{}, err
+	}
+
+	if err := resp.TryIntoErr(); err != nil {
+		return GetAuthInfoResp{}, err
+	}
+
+	return resp.GetAuthInfoResp, nil
+}

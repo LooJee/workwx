@@ -15,6 +15,7 @@ type AuthCorpInfo struct {
 	CorpType          string `json:"corp_type"`
 	CorpSquareLogoUrl string `json:"corp_square_logo_url"`
 	CorpUserMax       int    `json:"corp_user_max"`
+	CorpAgentMax      int    `json:"corp_agent_max"`
 	CorpFullName      string `json:"corp_full_name"`
 	VerifiedEndTime   int    `json:"verified_end_time"`
 	SubjectType       int    `json:"subject_type"`
@@ -22,6 +23,7 @@ type AuthCorpInfo struct {
 	CorpScale         string `json:"corp_scale"`
 	CorpIndustry      string `json:"corp_industry"`
 	CorpSubIndustry   string `json:"corp_sub_industry"`
+	Location          string `json:"location"`
 }
 
 type AuthInfoAgentPrivilege struct {
@@ -66,9 +68,14 @@ type RegisterCodeInfo struct {
 }
 
 type GetPermanentCodeResp struct {
-	AccessToken    string         `json:"access_token"`
-	ExpiresIn      int            `json:"expires_in"`
-	PermanentCode  string         `json:"permanent_code"`
+	AccessToken   string `json:"access_token"`
+	ExpiresIn     int    `json:"expires_in"`
+	PermanentCode string `json:"permanent_code"`
+	State         string `json:"state"`
+	CorpAuthInfo
+}
+
+type CorpAuthInfo struct {
 	DealerCorpInfo DealerCorpInfo `json:"dealer_corp_info"`
 	AuthCorpInfo   AuthCorpInfo   `json:"auth_corp_info"`
 	AuthInfo       struct {
@@ -76,5 +83,13 @@ type GetPermanentCodeResp struct {
 	} `json:"auth_info"`
 	AuthUserInfo     AuthUserInfo     `json:"auth_user_info"`
 	RegisterCodeInfo RegisterCodeInfo `json:"register_code_info"`
-	State            string           `json:"state"`
+}
+
+type GetAuthInfoResp struct {
+	CorpAuthInfo
+}
+
+type GetAuthInfoReq struct {
+	AuthCorpId    string `json:"auth_corpid"`
+	PermanentCode string `json:"permanent_code"`
 }
