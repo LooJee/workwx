@@ -25,3 +25,20 @@ func (c *App) ListDepartments(id int64) ([]*DeptInfo, error) {
 
 	return resp.Department, nil
 }
+
+func (c *App) GetDepartment(id int64) (*DeptInfo, error) {
+	type Response struct {
+		CommonResp
+		Department DeptInfo `json:"department"`
+	}
+
+	var resp Response
+	err := c.executeWXApiGet("/cgi-bin/department/get", GetDeptInfoReq{DeptId: id}, &resp, true)
+	if err != nil {
+		return &resp.Department, err
+	}
+	if bizErr := resp.TryIntoErr(); bizErr != nil {
+		return &resp.Department, bizErr
+	}
+	return &resp.Department, nil
+}

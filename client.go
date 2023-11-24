@@ -145,8 +145,6 @@ func (c *App) composeWXURLWithToken(path string, req interface{}, withAccessToke
 
 	q := wxApiURL.Query()
 
-	q.Set("debug", "1")
-
 	if c.appType == AppTypeCustom {
 		q.Set("access_token", c.accessToken.getToken())
 	} else if c.appType == AppTypeProvider {
@@ -164,7 +162,7 @@ func (c *App) executeWXApiGet(path string, req urlValuer, objResp interface{}, w
 	wxUrlWithToken := c.composeWXURLWithToken(path, req, withAccessToken)
 	urlStr := wxUrlWithToken.String()
 
-	//defer logger.Debugf("url: %s, req: %+v, resp: %+v", urlStr, req, objResp)
+	defer fmt.Printf("url: %s, req: %+v, resp: %+v\n", urlStr, req, objResp)
 
 	resp, err := c.opts.restyCli.R().Get(urlStr)
 	if err != nil {
@@ -180,7 +178,7 @@ func (c *App) execGet(path string, req urlValuer, withAccessToken bool) (hrsp *h
 	wxUrlWithToken := c.composeWXURLWithToken(path, req, withAccessToken)
 	urlStr := wxUrlWithToken.String()
 
-	//defer logger.Debugf("url: %s, req: %+v, resp: %+v", urlStr, req, objResp)
+	//defer fmt.Printf("url: %s, req: %+v, resp: %+v", urlStr, req, objResp)
 
 	resp, err := c.opts.restyCli.R().SetDoNotParseResponse(true).Get(urlStr)
 	if err != nil {
@@ -265,7 +263,7 @@ func (c *App) executeWXApiMediaUpload(path string, req mediaUploader, objResp in
 	wxUrlWithToken := c.composeWXURLWithToken(path, req, withAccessToken)
 	urlStr := wxUrlWithToken.String()
 
-	//defer logger.Debugf("url: %s, req: %+v, resp: %+v", urlStr, req, objResp)
+	defer fmt.Printf("url: %s, req: %+v, resp: %+v\n", urlStr, req, objResp)
 
 	m := req.getMedia()
 	resp, err := c.opts.restyCli.R().
