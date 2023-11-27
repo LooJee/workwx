@@ -91,6 +91,12 @@ const EventTypeKfMsgOrEvent EventType = "kf_msg_or_event"
 // EventTypeKfAccountAuthChange 客服账号授权变更事件
 const EventTypeKfAccountAuthChange EventType = "kf_account_auth_change"
 
+// EventTypeSubscribe 成员关注事件
+const EventTypeSubscribe EventType = "subscribe"
+
+// EventTypeUnsubscribe 成员取消关注事件
+const EventTypeUnsubscribe EventType = "unsubscribe"
+
 // ChangeType 变更类型
 type ChangeType string
 
