@@ -18,6 +18,27 @@ type rxMessageCommon struct {
 	Event EventType `xml:"Event"`
 	// ChangeType 变更类型 Event为change_external_contact存在
 	ChangeType ChangeType `xml:"ChangeType"`
+	rxSuiteMessage
+}
+
+type SuiteInfoType string
+
+const (
+	SuiteInfoTypeSuiteTicket        SuiteInfoType = "suite_ticket"
+	SuiteInfoTypeCreateAuth         SuiteInfoType = "create_auth"
+	SuiteInfoTypeChangeAuth         SuiteInfoType = "change_auth"
+	SuiteInfoTypeCancelAuth         SuiteInfoType = "cancel_auth"
+	SuiteInfoTypeResetPermanentCode SuiteInfoType = "reset_permanent_code"
+)
+
+type rxSuiteMessage struct {
+	SuiteId     string        `xml:"SuiteId"`
+	InfoType    SuiteInfoType `xml:"InfoType"`
+	TimeStamp   int64         `xml:"TimeStamp"`
+	SuiteTicket string        `xml:"SuiteTicket"`
+	AuthCode    string        `xml:"AuthCode"`
+	State       string        `xml:"State"`
+	AuthCorpId  string        `xml:"AuthCorpId"`
 }
 
 // MessageType 消息类型
@@ -69,6 +90,12 @@ const EventTypeKfMsgOrEvent EventType = "kf_msg_or_event"
 
 // EventTypeKfAccountAuthChange 客服账号授权变更事件
 const EventTypeKfAccountAuthChange EventType = "kf_account_auth_change"
+
+// EventTypeSubscribe 成员关注事件
+const EventTypeSubscribe EventType = "subscribe"
+
+// EventTypeUnsubscribe 成员取消关注事件
+const EventTypeUnsubscribe EventType = "unsubscribe"
 
 // ChangeType 变更类型
 type ChangeType string

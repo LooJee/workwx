@@ -55,3 +55,16 @@ func (c *App) execJSCode2Session(req jsCode2SessionReq) (jsCode2SessionResp, err
 
 	return resp, nil
 }
+
+func (c *App) execGetSuitAccessToken(req suiteAccessTokenReq) (suiteAccessTokenResp, error) {
+	var resp suiteAccessTokenResp
+	err := c.executeWXApiJSONPost("/cgi-bin/service/get_suite_token", newIntoBodyer(req), &resp, false)
+	if err != nil {
+		return suiteAccessTokenResp{}, err
+	}
+	if bizErr := resp.TryIntoErr(); bizErr != nil {
+		return suiteAccessTokenResp{}, bizErr
+	}
+
+	return resp, nil
+}

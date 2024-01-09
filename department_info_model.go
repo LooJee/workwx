@@ -1,5 +1,10 @@
 package workwx
 
+import (
+	"net/url"
+	"strconv"
+)
+
 // DeptInfo 部门信息
 type DeptInfo struct {
 	// ID 部门 ID
@@ -10,4 +15,16 @@ type DeptInfo struct {
 	ParentID int64 `json:"parentid"`
 	// Order 在父部门中的次序值。order值大的排序靠前。值范围是[0, 2^32)
 	Order uint32 `json:"order"`
+}
+
+type GetDeptInfoReq struct {
+	DeptId int64
+}
+
+var _ urlValuer = GetDeptInfoReq{}
+
+func (x GetDeptInfoReq) intoURLValues() url.Values {
+	return url.Values{
+		"id": {strconv.Itoa(int(x.DeptId))},
+	}
 }

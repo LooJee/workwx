@@ -92,3 +92,26 @@ type jsAPITicketResp struct {
 	Ticket        string `json:"ticket"`
 	ExpiresInSecs int64  `json:"expires_in"`
 }
+
+type suiteAccessTokenReq struct {
+	SuiteId     string `json:"suite_id"`
+	SuiteSecret string `json:"suite_secret"`
+	SuiteTicket string `json:"suite_ticket"`
+}
+
+type suiteAccessTokenResp struct {
+	CommonResp
+
+	SuiteAccessToken string `json:"suite_access_token"`
+	ExpiresInSecs    int64  `json:"expires_in"`
+}
+
+type providerAccessTokenReq struct {
+	CorpId         string `json:"corpid"`
+	ProviderSecret string `json:"provider_secret"`
+}
+
+type providerAccessTokenResp struct {
+	ProviderAccessToken string `json:"provider_access_token"`
+	ExpiresIn           int    `json:"expires_in"`
+}
