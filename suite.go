@@ -37,3 +37,21 @@ func (c *App) GetAuthInfo(ctx context.Context, corpId, permanentCode string) (Ge
 
 	return resp.GetAuthInfoResp, nil
 }
+
+// 获取应用二维码，仅限第三方应用使用
+func (c *App) GetAppQrcode(ctx context.Context, req GetAppQrcodeReq) (GetAppQrcodeResp, error) {
+	type Response struct {
+		CommonResp
+		GetAppQrcodeResp
+	}
+	var resp Response
+	if err := c.executeWXApiJSONPost("/cgi-bin/service/get_app_qrcode", newIntoBodyer(req), &resp, true); err != nil {
+		return GetAppQrcodeResp{}, err
+	}
+
+	if err := resp.TryIntoErr(); err != nil {
+		return GetAppQrcodeResp{}, err
+	}
+
+	return resp.GetAppQrcodeResp, nil
+}

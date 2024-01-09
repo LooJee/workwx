@@ -93,3 +93,14 @@ type GetAuthInfoReq struct {
 	AuthCorpId    string `json:"auth_corpid"`
 	PermanentCode string `json:"permanent_code"`
 }
+
+type GetAppQrcodeReq struct {
+	SuiteId    string `json:"suite_id"`
+	State      string `json:"state,omitempty"`
+	Style      int    `json:"style"`
+	ResultType int    `json:"result_type"`
+}
+
+type GetAppQrcodeResp struct {
+	Qrcode string `json:"qrcode"` // 二维码URL地址
+}
