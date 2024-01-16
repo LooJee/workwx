@@ -94,6 +94,7 @@ func (c *WorkWX) WithApp(corpSecret string, opts ...AppOption) *App {
 	}
 
 	if app.suiteAgent != nil {
+		fmt.Println("get suiteAgent:", app.suiteAgent.CorpID)
 		app.tokenGetter = func() (tokenInfo, error) {
 			resp, err := app.suiteAgent.GetCorpToken(context.Background(), c.CorpID, app.CorpSecret)
 			if err != nil {
