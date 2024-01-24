@@ -55,3 +55,21 @@ func (c *App) GetAppQrcode(ctx context.Context, req GetAppQrcodeReq) (GetAppQrco
 
 	return resp.GetAppQrcodeResp, nil
 }
+
+// 第三方服务商获取企业凭证
+func (c *App) GetCorpToken(ctx context.Context, corpId, permanentCode string) (GetCorpTokenResp, error) {
+	type Response struct {
+		CommonResp
+		GetCorpTokenResp
+	}
+	var resp Response
+	if err := c.executeWXApiJSONPost("/cgi-bin/service/get_corp_token", newIntoBodyer(GetCorpTokenReq{AuthCorpId: corpId, PermanentCode: permanentCode}), &resp, true); err != nil {
+		return GetCorpTokenResp{}, err
+	}
+
+	if err := resp.TryIntoErr(); err != nil {
+		return GetCorpTokenResp{}, err
+	}
+
+	return resp.GetCorpTokenResp, nil
+}

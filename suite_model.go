@@ -104,3 +104,13 @@ type GetAppQrcodeReq struct {
 type GetAppQrcodeResp struct {
 	Qrcode string `json:"qrcode"` // 二维码URL地址
 }
+
+type GetCorpTokenReq struct {
+	AuthCorpId    string `json:"auth_corpid"`
+	PermanentCode string `json:"permanent_code"`
+}
+
+type GetCorpTokenResp struct {
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int    `json:"expires_in"`
+}

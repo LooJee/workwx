@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"sync"
+	"time"
 
 	"github.com/mozillazg/go-httpheader"
 	"github.com/pkg/errors"
@@ -31,6 +32,9 @@ type App struct {
 	jsapiTicketAgentConfig *token
 	appType                AppType
 
+	tokenGetter tokenGetter
+	suiteAgent  *App
+
 	SuiteTicketGetter GetSuiteTicket // 获取 suiteTicket
 }
 
@@ -48,11 +52,19 @@ func New(corpID string, opts ...CtorOption) *WorkWX {
 	}
 }
 
+type tokenGetter func() (tokenInfo, error)
+
 type AppOption func(*App)
 
 func AppWithAgentID(agentID int64) AppOption {
 	return func(app *App) {
 		app.AgentID = agentID
+	}
+}
+
+func AppWithSuiteAgent(suiteAgent *App) AppOption {
+	return func(app *App) {
+		app.suiteAgent = suiteAgent
 	}
 }
 
@@ -81,7 +93,26 @@ func (c *WorkWX) WithApp(corpSecret string, opts ...AppOption) *App {
 		opt(&app)
 	}
 
-	app.accessToken.setGetTokenFunc(app.getAccessToken)
+	if app.suiteAgent != nil {
+		fmt.Println("get suiteAgent:", app.suiteAgent.CorpID)
+		app.tokenGetter = func() (tokenInfo, error) {
+			resp, err := app.suiteAgent.GetCorpToken(context.Background(), c.CorpID, app.CorpSecret)
+			if err != nil {
+				return tokenInfo{}, err
+			}
+
+			return tokenInfo{
+				corpId:    app.CorpID,
+				secret:    app.CorpSecret,
+				appType:   app.appType,
+				token:     resp.AccessToken,
+				expiresIn: time.Duration(resp.ExpiresIn),
+			}, nil
+		}
+	} else {
+		app.tokenGetter = app.getAccessToken
+	}
+	app.accessToken.setGetTokenFunc(app.tokenGetter)
 	app.jsapiTicket.setGetTokenFunc(app.getJSAPITicket)
 	app.jsapiTicketAgentConfig.setGetTokenFunc(app.getJSAPITicketAgentConfig)
 	app.SpawnAccessTokenRefresher()
