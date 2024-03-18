@@ -73,3 +73,21 @@ func (c *App) GetCorpToken(ctx context.Context, corpId, permanentCode string) (G
 
 	return resp.GetCorpTokenResp, nil
 }
+
+// 第三方服务商通讯录搜索
+func (c *App) ContactSearch(ctx context.Context, req SearchContactReq) (SearchContactResp, error) {
+	type Response struct {
+		CommonResp
+		SearchContactResp
+	}
+	var resp Response
+	if err := c.executeWXApiJSONPost("/cgi-bin/service/contact/search", newIntoBodyer(req), &resp, true); err != nil {
+		return SearchContactResp{}, err
+	}
+
+	if err := resp.TryIntoErr(); err != nil {
+		return SearchContactResp{}, err
+	}
+
+	return resp.SearchContactResp, nil
+}

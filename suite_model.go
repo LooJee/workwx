@@ -114,3 +114,33 @@ type GetCorpTokenResp struct {
 	AccessToken string `json:"access_token"`
 	ExpiresIn   int    `json:"expires_in"`
 }
+
+type SearchContactReq struct {
+	AuthCorpid     string `json:"auth_corpid"`
+	QueryWord      string `json:"query_word"`
+	QueryType      int    `json:"query_type"`
+	QueryRange     int    `json:"query_range"`
+	Agentid        int    `json:"agentid"`
+	Limit          int    `json:"limit"`
+	FullMatchField int    `json:"full_match_field"`
+	Cursor         string `json:"cursor"`
+}
+
+type SearchContactResp struct {
+	QueryResult SearchContactQueryResult `json:"query_result"`
+	IsLast      bool                     `json:"is_last"`
+	NextCursor  string                   `json:"next_cursor"`
+}
+
+type SearchContactQueryResult struct {
+	User  SearchContactQueryResultUser `json:"user"`
+	Party struct {
+		DepartmentId []int `json:"department_id"`
+	} `json:"party"`
+	DismissUser SearchContactQueryResultUser `json:"dismiss_user"`
+}
+
+type SearchContactQueryResultUser struct {
+	Userid     []string `json:"userid"`
+	OpenUserid []string `json:"open_userid"`
+}
