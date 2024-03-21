@@ -24,11 +24,12 @@ type rxMessageCommon struct {
 type SuiteInfoType string
 
 const (
-	SuiteInfoTypeSuiteTicket        SuiteInfoType = "suite_ticket"
-	SuiteInfoTypeCreateAuth         SuiteInfoType = "create_auth"
-	SuiteInfoTypeChangeAuth         SuiteInfoType = "change_auth"
-	SuiteInfoTypeCancelAuth         SuiteInfoType = "cancel_auth"
-	SuiteInfoTypeResetPermanentCode SuiteInfoType = "reset_permanent_code"
+	SuiteInfoTypeSuiteTicket           SuiteInfoType = "suite_ticket"
+	SuiteInfoTypeCreateAuth            SuiteInfoType = "create_auth"
+	SuiteInfoTypeChangeAuth            SuiteInfoType = "change_auth"
+	SuiteInfoTypeCancelAuth            SuiteInfoType = "cancel_auth"
+	SuiteInfoTypeResetPermanentCode    SuiteInfoType = "reset_permanent_code"
+	SuiteInfoTypeChangeExternalContact SuiteInfoType = "change_external_contact"
 )
 
 type rxSuiteMessage struct {
