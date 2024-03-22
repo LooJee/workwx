@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/go-resty/resty/v2"
 	"net/http"
 	"net/url"
 	"sync"
@@ -45,6 +46,17 @@ func New(corpID string, opts ...CtorOption) *WorkWX {
 	for _, o := range opts {
 		o.applyTo(&optionsObj)
 	}
+
+	optionsObj.restyCli.SetRetryCount(3)
+	optionsObj.restyCli.SetRetryWaitTime(100 * time.Millisecond)
+	optionsObj.restyCli.SetRetryMaxWaitTime(200 * time.Millisecond)
+	optionsObj.restyCli.AddRetryCondition(func(response *resty.Response, err error) bool {
+		if err != nil || response.StatusCode() > http.StatusInternalServerError {
+			return true
+		}
+
+		return false
+	})
 
 	return &WorkWX{
 		opts:   optionsObj,
