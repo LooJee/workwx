@@ -1,9 +1,8 @@
 package workwx
 
 import (
-	"net/http"
-
 	"github.com/go-resty/resty/v2"
+	"net/http"
 )
 
 // DefaultQYAPIHost 默认企业微信 API Host
