@@ -28,6 +28,7 @@ const (
 	SuiteInfoTypeCreateAuth            SuiteInfoType = "create_auth"
 	SuiteInfoTypeChangeAuth            SuiteInfoType = "change_auth"
 	SuiteInfoTypeCancelAuth            SuiteInfoType = "cancel_auth"
+	SuiteInfoTypeChangeAppAdmin        SuiteInfoType = "change_app_admin"
 	SuiteInfoTypeResetPermanentCode    SuiteInfoType = "reset_permanent_code"
 	SuiteInfoTypeChangeExternalContact SuiteInfoType = "change_external_contact"
 )
