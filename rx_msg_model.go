@@ -102,6 +102,8 @@ const EventTypeSubscribe EventType = "subscribe"
 // EventTypeUnsubscribe 成员取消关注事件
 const EventTypeUnsubscribe EventType = "unsubscribe"
 
+const EventTypeChangeAppAdmin EventType = "change_app_admin"
+
 // ChangeType 变更类型
 type ChangeType string
 
