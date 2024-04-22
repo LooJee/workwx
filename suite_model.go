@@ -1,5 +1,7 @@
 package workwx
 
+import "net/url"
+
 type GetPermanentCodeReq struct {
 	AuthCode string `json:"auth_code"`
 }
@@ -143,4 +145,24 @@ type SearchContactQueryResult struct {
 type SearchContactQueryResultUser struct {
 	Userid     []string `json:"userid"`
 	OpenUserid []string `json:"open_userid"`
+}
+
+type GetUserInfoThirdReq struct {
+	Code string `json:"code"`
+}
+
+var _ urlValuer = GetUserInfoThirdReq{}
+
+func (x GetUserInfoThirdReq) intoURLValues() url.Values {
+	return url.Values{
+		"code": {x.Code},
+	}
+}
+
+type GetUserInfoThirdResp struct {
+	Corpid     string `json:"corpid"`
+	Userid     string `json:"userid"`
+	UserTicket string `json:"user_ticket"`
+	ExpiresIn  int    `json:"expires_in"`
+	OpenUserid string `json:"open_userid"`
 }
