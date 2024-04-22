@@ -91,3 +91,21 @@ func (c *App) ContactSearch(ctx context.Context, req SearchContactReq) (SearchCo
 
 	return resp.SearchContactResp, nil
 }
+
+// 获取访问用户身份
+func (c *App) GetUserInfoThird(ctx context.Context, req GetUserInfoThirdReq) (GetUserInfoThirdResp, error) {
+	type Response struct {
+		CommonResp
+		GetUserInfoThirdResp
+	}
+	var resp Response
+	if err := c.executeWXApiGet("/cgi-bin/service/auth/getuserinfo3rd", req, &resp, true); err != nil {
+		return GetUserInfoThirdResp{}, err
+	}
+
+	if err := resp.TryIntoErr(); err != nil {
+		return GetUserInfoThirdResp{}, err
+	}
+
+	return resp.GetUserInfoThirdResp, nil
+}
